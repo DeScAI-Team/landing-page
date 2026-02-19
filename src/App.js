@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Team from "./Team";
 
 // ─── True 3D spherical orbit ────────────────────────────────────────────────
 // Each node lives on a sphere. We rotate the sphere in 3D (two-axis tilt),
@@ -8,13 +10,13 @@ import { useEffect, useRef, useState } from "react";
 const NODES = [
   {
     id: "descai-model",
-    label: "DeScAi Model",
+    label: "DePin Hosting",
     tag: "INFERENCE",
     // spherical coords: theta (longitude), phi (latitude inclination from equator)
     theta0: 0,
     phi0: 0,  // all on same plane for consistent orbit
-    description: "On-chain LLM inference hosted via the Akash Network — decentralized GPU compute with sovereign, censorship-resistant inference on demand. No centralized API keys. Every review generation is fully reproducible.",
-    tech: ["Akash Network", "LLaMA / Mistral", "On-Chain Compute"],
+    description: "Our agent relies on on-chain inference hosted via Akash Network, a decentralized compute network, to provide sovereign, censorship-resistant review generation and claim validation. An inference on demand model combined with our MoE architecture allows for hyper-low overhead and completely autonomous opperation through agent triggered model deployments. No centralized API creates a single point of failure and frees our agent from the whims of big labs. Thank you to Akash network for providing initial integration support.",
+    tech: ["Akash Network", "DeScAi-v1.0", "Mixtral"],
   },
   {
     id: "crawler",
@@ -22,7 +24,7 @@ const NODES = [
     tag: "INGESTION",
     theta0: 90,
     phi0: 0,
-    description: "An autonomous crawler that continuously indexes DeSci papers, preprints, and protocol documentation — cleaning and writing structured knowledge into the Decentralized Knowledge Graph.",
+    description: "Our autonomous crawler deployed periodically via an Akash Network container caputes and indexes DeSci snapshots including papers, preprints, and protocol documentation, blog/social posts, funding information, and more. It cleans and writes this data to the DKG as structured knowledge assets. The crawler currently covers ResearchHub, Molecule, BioDao, and Pump.Science, and we are always looking to expand it to further platforms. Thank you to Molecule for providing initial integration support.",
     tech: ["Scrapy / Playwright", "NLP Pipeline", "DKG Writer"],
   },
   {
@@ -31,8 +33,8 @@ const NODES = [
     tag: "KNOWLEDGE",
     theta0: 180,
     phi0: 0,
-    description: "Decentralized RAG via OriginTrail's DKG edge node. The on-chain knowledge graph stores verifiable scientific claims that DeScAi queries at inference time for grounded, citable reviews.",
-    tech: ["OriginTrail DKG", "SPARQL", "Edge Node"],
+    description: "Our agent utilizes the decentralized RAG integrations offered via OriginTrail's Decentralized Knowledge Graph. The DKG is as an on-chain knowledge graph we use to store verifiable DeSci content collected by our crawler, as well as other DeSci content uploaded to the graph. The DeScAi agent queries the dkg whenever suffiecient new content is collected to extract and verify new claims. This system allows for transparent and publicly verifiable citation of all material seen by the agent.",
+    tech: ["OriginTrail DKG Edge Node", "DeSci Graph", "RDF/OWL"],
   },
   {
     id: "permaweb",
@@ -40,8 +42,8 @@ const NODES = [
     tag: "PERMANENCE",
     theta0: 270,
     phi0: 0,
-    description: "Every review is immutably written to the Arweave PermaWeb. No revisions without record. No takedowns. The scientific record stays open and permanent — forever accessible.",
-    tech: ["Arweave", "Bundlr / Irys", "Permanent Storage"],
+    description: "Every review is immutably written to the Arweave PermaWeb using the AR.IO Turbo SDK. No revisions without record, no takedowns, no tampering. The scientific record stays open and permanent. The agent is able to upload reviews autonomously while the blog pulls them straight from the block-weave. Special thank you to AR.IO for providing initial integration support.",
+    tech: ["Arweave Turbo SDK", "PermaWeb"],
   },
 ];
 
@@ -49,7 +51,7 @@ const CENTER_NODE = {
   id: "agent-blog",
   label: "Agent Blog",
   tag: "LIVE",
-  description: "The public face of DeScAi. AI-generated, on-chain peer reviews published and read here. Each post is a structured review of a DeSci paper or project — written autonomously and permanently stored on the PermaWeb.",
+  description: "The public face of the DeScAi agent, generated reviews are pulled directly from the Permaweb and published here entirely without human intervention. Each post is a structured review of a DeSci paper or project written autonomously by the agent based on verifiable DKG content. Other information including aggregated DeSci token data and project relationships also displayed here.",
   tech: ["Agent Output", "Arweave Read", "DKG Verified"],
 };
 
@@ -229,9 +231,7 @@ function NodePanel({ node, onClose }) {
                 marginBottom: 36,
                 textAlign: "justify",
               }}>
-                This component operates as a critical node within the DeScAi infrastructure, ensuring seamless integration with decentralized protocols. 
-                Built for resilience and transparency, it maintains continuous synchronization with the broader network while preserving data integrity 
-                and enabling verifiable operations across the distributed system architecture.
+                Each component within the DeScAi agentic architecture is built on top of decentralized protocols built for resilience and transparency. Please check our documentation for more details on how we enable and maintain verifiable operations across this distributed system architecture.
               </p>
 
               {/* Additional details section */}
@@ -283,7 +283,7 @@ function NodePanel({ node, onClose }) {
                   boxShadow: "0 0 8px rgba(100,200,150,0.5)",
                   animation: "blinkLive 2s ease-in-out infinite",
                 }} />
-                System Operational
+                In Development 
               </div>
             </div>
           </div>
@@ -571,22 +571,20 @@ function OrbitalSystem({ onNodeClick }) {
           textAlign: "center",
         }}>Agent{"\n"}Blog</span>
         <span style={{
-          color: "rgba(255,255,255,0.3)",
-          fontSize: 11,
+          color: "rgb(199, 27, 27)",
+          fontSize: 12,
           fontFamily: "'Courier New', monospace",
           letterSpacing: 3, marginTop: 7,
-          animation: "blinkLive 1.8s ease-in-out infinite",
-        }}>● LIVE</span>
+          animation: "blinkLive 2.8s ease-in-out infinite",
+        }}>● Coming Soon</span>
       </div>
     </div>
   );
 }
 
 // ─── Landing page ─────────────────────────────────────────────────────────────
-export default function App() {
+function LandingPage() {
   const [activeNode, setActiveNode] = useState(null);
-
-  const FEATURES = [...NODES, CENTER_NODE];
 
   return (
     <div style={{ background: "#06040f", minHeight: "100vh", color: "#fff", overflowX: "hidden" }}>
@@ -611,6 +609,10 @@ export default function App() {
         @keyframes holoShift {
           0% { background-position: 200% 50%; }
           100% { background-position: 0% 50%; }
+        }
+        @keyframes infiniteScroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-16.666%); }
         }
 
         body { font-family: 'Syne', sans-serif; }
@@ -692,7 +694,7 @@ export default function App() {
 
         {/* Orbital diagram */}
         <div style={{
-          marginTop: -100,
+          marginTop: -120,
           animation: "fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.15s both",
         }}>
           <OrbitalSystem onNodeClick={setActiveNode} />
@@ -705,16 +707,27 @@ export default function App() {
           color: "rgba(255,255,255,0.28)",
           textTransform: "uppercase",
           animation: "fadeUp 0.8s ease 0.2s both",
-          marginTop: 10,
+          marginTop: -10,
         }}>
           Independent Review Agent For Decentralized Science
+        </p>
+
+        {/* Subline instruction */}
+        <p style={{
+          fontFamily: "'Syne Mono', monospace",
+          fontSize: 12, letterSpacing: 2,
+          color: "rgba(255,255,255,0.35)",
+          animation: "fadeUp 0.8s ease 0.3s both",
+          marginTop: 17,
+        }}>
+          Click orbitals or Scroll for more details
         </p>
 
         {/* Scroll hint */}
         <div 
           onClick={() => window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })}
           style={{ 
-            marginTop: 24, 
+            marginTop: 14, 
             animation: "scrollDrop 2.4s ease-in-out infinite", 
             fontSize: "30px",
             cursor: "pointer",
@@ -735,60 +748,260 @@ export default function App() {
         </div>
       </section>
 
-      {/* ── Protocol section ── */}
+      {/* ── How it works — three-panel display ── */}
       <section style={{
         position: "relative", zIndex: 1,
         maxWidth: 1000, margin: "0 auto",
-        padding: "80px 32px",
+        padding: "60px 32px",
       }}>
-        <div style={{ marginBottom: 48 }}>
+        <div style={{ marginBottom: 40, textAlign: "center" }}>
           <span style={{
             display: "block",
             fontFamily: "'Syne Mono', monospace",
             fontSize: 10, letterSpacing: 5,
             color: "rgba(255,255,255,0.25)",
             marginBottom: 12,
-          }}>ARCHITECTURE</span>
+          }}>HOW IT WORKS</span>
           <h2 style={{
             fontFamily: "'Syne', sans-serif",
             fontWeight: 700, fontSize: 28,
             color: "#fff", letterSpacing: -0.3,
-          }}>Protocol Stack</h2>
+          }}>Our infrastructure</h2>
         </div>
 
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: 8,
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: 28,
         }}>
-          {FEATURES.map((node, i) => (
-            <div key={node.id}
-              className="fcard"
-              onClick={() => setActiveNode(node)}
-              style={{ animation: `fadeUp 0.5s ease ${i * 0.06}s both` }}
+          {[
+            {
+              title: "Our Agent",
+              icon: (
+                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="6" width="32" height="26" rx="3" stroke="rgba(180,140,255,0.8)" strokeWidth="1.5" fill="none" />
+                  <path d="M18 20h12M18 16h8" stroke="rgba(180,140,255,0.6)" strokeWidth="1.2" strokeLinecap="round" />
+                  <circle cx="15" cy="16" r="2" fill="rgba(180,140,255,0.6)" />
+                  <path d="M16 32v4M32 32v4M12 36h24" stroke="rgba(180,140,255,0.5)" strokeWidth="1.2" strokeLinecap="round" />
+                  <circle cx="24" cy="42" r="2.5" stroke="rgba(180,140,255,0.6)" strokeWidth="1" fill="none" />
+                  <path d="M22 42h4" stroke="rgba(180,140,255,0.5)" strokeWidth="0.8" />
+                </svg>
+              ),
+              description: "Fully utonomous AI-Agent that collects, analyzes, and reviews DeSci material include research, posts, funding information, and more to produce comprehensive claim anlasyes posted immutably on-chain.",
+              link: "https://descai.gitbook.io/descai-docs/",
+              linkLabel: "See Documentation",
+            },
+            {
+              title: "Our Model",
+              icon: (
+                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="14" r="5" stroke="rgba(100,200,255,0.8)" strokeWidth="1.5" fill="none" />
+                  <circle cx="12" cy="30" r="4" stroke="rgba(100,200,255,0.6)" strokeWidth="1.2" fill="none" />
+                  <circle cx="36" cy="30" r="4" stroke="rgba(100,200,255,0.6)" strokeWidth="1.2" fill="none" />
+                  <circle cx="24" cy="40" r="3.5" stroke="rgba(100,200,255,0.6)" strokeWidth="1.2" fill="none" />
+                  <line x1="24" y1="19" x2="14" y2="27" stroke="rgba(100,200,255,0.4)" strokeWidth="1" />
+                  <line x1="24" y1="19" x2="34" y2="27" stroke="rgba(100,200,255,0.4)" strokeWidth="1" />
+                  <line x1="14" y1="33" x2="22" y2="38" stroke="rgba(100,200,255,0.35)" strokeWidth="1" />
+                  <line x1="34" y1="33" x2="26" y2="38" stroke="rgba(100,200,255,0.35)" strokeWidth="1" />
+                </svg>
+              ),
+              description: "Domain-trained on a ~40 Billion token publicly accessible dataset of high-quality scientific material, our model is able to effectively evaluate scientific claims and produce transparent, contextually relevant reviews.",
+              link: "https://huggingface.co/DeScAi",
+              linkLabel: "Use our model",
+            },
+            {
+              title: "Our Team",
+              icon: (
+                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="14" r="5.5" stroke="rgba(100,220,160,0.8)" strokeWidth="1.5" fill="none" />
+                  <path d="M14 34c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="rgba(100,220,160,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                  <circle cx="38" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
+                  <path d="M42 36c0-4-2.8-7-6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                  <circle cx="10" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
+                  <path d="M6 36c0-4 2.8-7 6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                </svg>
+              ),
+              description: "Based in the Stony Brook University Blockchain Business Lab, our interdisplinary and international team of web3 developers, ML researchers, and data scientists who make this work possible.",
+              link: "/team",
+              linkLabel: "Learn More",
+            },
+          ].map((panel, i) => (
+            <div key={panel.title} style={{
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              background: "rgba(255,255,255,0.02)",
+              border: "1px solid rgba(255,255,255,0.06)",
+              borderRadius: 4,
+              padding: "36px 24px 28px",
+              animation: `fadeUp 0.5s ease ${i * 0.1}s both`,
+              transition: "background 0.2s, border-color 0.2s",
+              cursor: "default",
+              height: "100%",
+            }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)";
+              }}
             >
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                <span style={{
-                  fontFamily: "'Syne Mono', monospace",
-                  fontSize: 9, letterSpacing: 3.5,
-                  color: "rgba(255,255,255,0.25)",
-                  textTransform: "uppercase",
-                }}>{node.tag}</span>
-                <span style={{ color: "rgba(255,255,255,0.12)", fontSize: 12 }}>↗</span>
+              {/* Icon */}
+              <div style={{
+                marginBottom: 24,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: 72,
+              }}>
+                {panel.icon}
               </div>
+
+              {/* Title */}
               <h3 style={{
                 fontFamily: "'Syne', sans-serif",
-                fontWeight: 700, fontSize: 14,
-                color: "#fff", letterSpacing: 0.2,
-                marginBottom: 10,
-              }}>{node.label}</h3>
+                fontWeight: 700,
+                fontSize: 16,
+                color: "#fff",
+                letterSpacing: 0.2,
+                marginBottom: 16,
+                textAlign: "center",
+              }}>{panel.title}</h3>
+
+              {/* Description text */}
               <p style={{
                 fontFamily: "Georgia, serif",
-                fontSize: 13, lineHeight: 1.68,
-                color: "rgba(255,255,255,0.4)",
-              }}>{node.description.slice(0, 90)}…</p>
+                fontSize: 13,
+                lineHeight: 1.68,
+                color: "rgba(255,255,255,0.45)",
+                textAlign: "center",
+                marginBottom: 28,
+                flex: "1 1 auto",
+              }}>{panel.description}</p>
+
+              {/* Link button */}
+              {panel.link.startsWith('/') ? (
+                <Link to={panel.link} style={{
+                  fontFamily: "'Syne Mono', monospace",
+                  fontSize: 9,
+                  letterSpacing: 2.5,
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.4)",
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 3,
+                  padding: "10px 22px",
+                  transition: "all 0.15s",
+                  display: "inline-block",
+                }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.75)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.4)";
+                  }}
+                >{panel.linkLabel} →</Link>
+              ) : (
+                <a href={panel.link} style={{
+                  fontFamily: "'Syne Mono', monospace",
+                  fontSize: 9,
+                  letterSpacing: 2.5,
+                  textTransform: "uppercase",
+                  color: "rgba(255,255,255,0.4)",
+                  textDecoration: "none",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 3,
+                  padding: "10px 22px",
+                  transition: "all 0.15s",
+                }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.75)";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.4)";
+                  }}
+                >{panel.linkLabel} →</a>
+              )}
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* ── Supported By Carousel ── */}
+      <section style={{
+        position: "relative", zIndex: 1,
+        padding: "30px 0",
+        overflow: "hidden",
+      }}>
+        <span style={{
+          display: "block",
+          fontFamily: "'Syne Mono', monospace",
+          fontSize: 10, letterSpacing: 5,
+          color: "rgba(255,255,255,0.25)",
+          marginBottom: 24,
+          textAlign: "center",
+        }}>SUPPORTED BY</span>
+
+        <div style={{
+          position: "relative",
+          height: 50,
+          maxWidth: 900,
+          margin: "0 auto",
+          overflow: "hidden",
+        }}>
+          {/* Left fade */}
+          <div style={{
+            position: "absolute", left: 0, top: 0, bottom: 0,
+            width: 150, zIndex: 2,
+            background: "linear-gradient(90deg, #06040f 0%, transparent 100%)",
+            pointerEvents: "none",
+          }} />
+
+          {/* Right fade */}
+          <div style={{
+            position: "absolute", right: 0, top: 0, bottom: 0,
+            width: 150, zIndex: 2,
+            background: "linear-gradient(270deg, #06040f 0%, transparent 100%)",
+            pointerEvents: "none",
+          }} />
+
+          {/* Carousel wrapper */}
+          <div style={{
+            display: "flex",
+            animation: "infiniteScroll 12s linear infinite",
+          }}>
+            {/* Repeat content multiple times for seamless loop */}
+            {[...Array(6)].map((_, idx) => (
+              <div key={idx} style={{
+                display: "flex",
+                gap: 100,
+                paddingRight: 100,
+                flexShrink: 0,
+              }}>
+                {["Akash Network", "AR.IO", "Molecule.XYZ"].map((name) => (
+                  <span key={name + idx} style={{
+                    fontFamily: "'Syne Mono', monospace",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    letterSpacing: 1,
+                    color: "rgba(255,255,255,0.35)",
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}>
+                    {name}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -827,30 +1040,32 @@ export default function App() {
         display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap",
       }}>
         {[
-          { label: "Read the Agent Blog", primary: true },
-          { label: "Explore the DKG", primary: false },
-          { label: "X", primary: false },
-          { label: "GitHub", primary: false },
-        ].map(({ label, primary }) => (
-          <button key={label} style={{
-            background: primary ? "rgba(255,255,255,0.9)" : "transparent",
-            border: primary ? "none" : "1px solid rgba(255,255,255,0.12)",
-            color: primary ? "#06040f" : "rgba(255,255,255,0.45)",
-            fontFamily: "'Syne Mono', monospace",
-            fontSize: 10, letterSpacing: 2.5,
-            padding: "12px 24px", cursor: "pointer",
-            borderRadius: 3, textTransform: "uppercase",
-            transition: "all 0.15s",
-          }}
-            onMouseEnter={e => {
-              if (primary) { e.currentTarget.style.background = "#fff"; }
-              else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }
+          { label: "Read Docs", primary: true, href: "https://descai.gitbook.io/descai-docs" },
+          { label: "Explore the DKG", primary: false, href: "https://dkg.origintrail.io/explore?ual=did:dkg:base:8453/0xc28f310a87f7621a087a603e2ce41c22523f11d7/435" },
+          { label: "X", primary: false, href: "https://x.com/DeScAiTeam" },
+          { label: "GitHub", primary: false, href: "https://github.com/DeScAI-Team" },
+        ].map(({ label, primary, href }) => (
+          <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+            <button style={{
+              background: primary ? "rgba(255,255,255,0.9)" : "transparent",
+              border: primary ? "none" : "1px solid rgba(255,255,255,0.12)",
+              color: primary ? "#06040f" : "rgba(255,255,255,0.45)",
+              fontFamily: "'Syne Mono', monospace",
+              fontSize: 10, letterSpacing: 2.5,
+              padding: "12px 24px", cursor: "pointer",
+              borderRadius: 3, textTransform: "uppercase",
+              transition: "all 0.15s",
             }}
-            onMouseLeave={e => {
-              if (primary) { e.currentTarget.style.background = "rgba(255,255,255,0.9)"; }
-              else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }
-            }}
-          >{label}</button>
+              onMouseEnter={e => {
+                if (primary) { e.currentTarget.style.background = "#fff"; }
+                else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }
+              }}
+              onMouseLeave={e => {
+                if (primary) { e.currentTarget.style.background = "rgba(255,255,255,0.9)"; }
+                else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }
+              }}
+            >{label}</button>
+          </a>
         ))}
       </section>
 
@@ -879,5 +1094,17 @@ export default function App() {
       {/* Panel */}
       {activeNode && <NodePanel node={activeNode} onClose={() => setActiveNode(null)} />}
     </div>
+  );
+}
+
+// ─── App Router ───────────────────────────────────────────────────────────────
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/team" element={<Team />} />
+      </Routes>
+    </Router>
   );
 }
