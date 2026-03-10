@@ -345,7 +345,6 @@ function OrbitalSystem({ onNodeClick }) {
   // Build orbit ellipse by sampling the orbit path in 3D
   const orbitPath = Array.from({ length: 240 }, (_, i) => {
     const t = (i / 240) * 360;
-    const phi = 0; // all on same plane
     const ta = t * Math.PI / 180;
     let v = [R * Math.cos(ta), R * Math.sin(ta), 0];
     v = rotX(v, TILT_X * Math.PI / 180);
@@ -645,7 +644,7 @@ function LandingPage() {
       </div>
 
       {/* ── Floating Blog Link ── */}
-      <a href="#" style={{
+      <a href="/" style={{
         position: "fixed",
         top: 24,
         right: 48,
