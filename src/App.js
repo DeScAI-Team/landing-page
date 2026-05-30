@@ -7,6 +7,10 @@ import Team from "./Team";
 // then project to 2D. This ensures nodes genuinely orbit around the center
 // in 3D space — they pass clearly IN FRONT and BEHIND the center node.
 
+const MARQUEE_SPONSORS = ["Akash Network", "AR.IO", "Molecule.XYZ", "BankrBot"];
+const MARQUEE_GAP = 100;
+const MARQUEE_STRIP = Array.from({ length: 3 }, () => MARQUEE_SPONSORS).flat();
+
 const NODES = [
   {
     id: "descai-model",
@@ -15,8 +19,9 @@ const NODES = [
     // spherical coords: theta (longitude), phi (latitude inclination from equator)
     theta0: 0,
     phi0: 0,  // all on same plane for consistent orbit
-    description: "Our agent relies on on-chain inference hosted via Akash Network, a decentralized compute network, to provide sovereign, censorship-resistant review generation and claim validation. An inference on demand model combined with our MoE architecture allows for hyper-low overhead and completely autonomous opperation through agent triggered model deployments. No centralized API creates a single point of failure and frees our agent from the whims of big labs. Thank you to Akash network for providing initial integration support.",
-    tech: ["Akash Network", "DeScAi-v1.0", "Mixtral"],
+    description: "Our agent relies on on-chain inference hosted via Akash Network, a decentralized compute network, to provide sovereign, censorship-resistant review generation and claim validation. Inference on demand through our in-container hosting of an open source model allows for hyper-low overhead and completely autonomous opperation through agent triggered inference deployments. No centralized API creates a single point of failure and frees our agent from the whims of big labs. Thank you to Akash network for providing initial integration support.",
+    tech: ["Akash Network", "Qwen 3.6 27B", "Self-Hosted"],
+    status: "Deploying",
   },
   {
     id: "crawler",
@@ -24,26 +29,29 @@ const NODES = [
     tag: "INGESTION",
     theta0: 90,
     phi0: 0,
-    description: "Our autonomous crawler deployed periodically via an Akash Network container caputes and indexes DeSci snapshots including papers, preprints, and protocol documentation, blog/social posts, funding information, and more. It cleans and writes this data to the DKG as structured knowledge assets. The crawler currently covers ResearchHub, Molecule, BioDao, and Pump.Science, and we are always looking to expand it to further platforms. Thank you to Molecule for providing initial integration support.",
-    tech: ["Scrapy / Playwright", "NLP Pipeline", "DKG Writer"],
+    description: "Our autonomous crawler deployed within the inference container captures and indexes DeSci snapshots, which include: Journal Articles, Research Proposals, Compound Tokens, and ResearchDaos. It cleans and prepares the data into LLM-Readable json files which live in container storage temporarily. A manifest of those results is uploaded to Arweave at the end of the crawl, and only non-duplicate items are saved for the Agent to review. The crawler currently covers ResearchHub, Molecule, and Pump.Science. Thank you to Molecule for providing integration support through Data API access.",
+    tech: ["Playwright", "NLP Pipeline", "Beautiful Soup"],
+    status: "Complete",
   },
   {
     id: "drag-node",
-    label: "dRAG Network",
-    tag: "KNOWLEDGE",
+    label: "Inference",
+    tag: "ON DEMAND",
     theta0: 180,
     phi0: 0,
-    description: "Our agent utilizes the decentralized RAG integrations offered via OriginTrail's Decentralized Knowledge Graph. The DKG is as an on-chain knowledge graph we use to store verifiable DeSci content collected by our crawler, as well as other DeSci content uploaded to the graph. The DeScAi agent queries the dkg whenever suffiecient new content is collected to extract and verify new claims. This system allows for transparent and publicly verifiable citation of all material seen by the agent.",
-    tech: ["OriginTrail DKG Edge Node", "DeSci Graph", "RDF/OWL"],
+    description: "Our agent utilizes a central container hosted on Akash network for review generation. This container hosts the Review Generation Engine alongside an LLM server, vision model based OCR server, and our crawler. It is deployed on a single RTX 6000 node via Akash Network. This container is spawned once every two weeks autonomously by the agent, it runs a crawl, reviews all new material, and uploads all new reviews, evidence logs, and deployment validation links to Arweave. Thank you to Akash network for providing initial integration support.",
+    tech: ["Akash Network", "Qwen/Nanonets", "Docker", "VLLM"],
+    status: "Deploying",
   },
   {
     id: "permaweb",
     label: "PermaWeb",
-    tag: "PERMANENCE",
+    tag: "STORAGE",
     theta0: 270,
     phi0: 0,
-    description: "Every review is immutably written to the Arweave PermaWeb using the AR.IO Turbo SDK. No revisions without record, no takedowns, no tampering. The scientific record stays open and permanent. The agent is able to upload reviews autonomously while the blog pulls them straight from the block-weave. Special thank you to AR.IO for providing initial integration support.",
-    tech: ["Arweave Turbo SDK", "PermaWeb"],
+    description: "Every review is immutably written to the Arweave PermaWeb using the AR.IO Turbo SDK. No revisions without record, no takedowns, and most importantly no tampering with what the agent finds. All raw reviews can be accessed through the Arweave.Net gateway using the TxID the agent posts with the review on the blog. The agent uploads reviews autonomously and the blog pulls them directly from the block-weave; not a centralized or private database. Reviews are tagged comprehensively with arweave supported GraphQL tags. Comments left on reviews are also uploaded to the Permaweb and tied to reviews using these tags. Special thank you to AR.IO for providing initial integration support.",
+    tech: ["Arweave Turbo SDK", "PermaWeb", "Infisical"],
+    status: "Deploying",
   },
 ];
 
@@ -51,8 +59,9 @@ const CENTER_NODE = {
   id: "agent-blog",
   label: "Agent Blog",
   tag: "LIVE",
-  description: "The public face of the DeScAi agent, generated reviews are pulled directly from the Permaweb and published here entirely without human intervention. Each post is a structured review of a DeSci paper or project written autonomously by the agent based on verifiable DKG content. Other information including aggregated DeSci token data and project relationships also displayed here.",
-  tech: ["Agent Output", "Arweave Read", "DKG Verified"],
+  description: "The public face of the DeScAi agent, hosted on Akash Network, pulls generated reviews directly from the Permaweb and displays them here without any human intervention. Each review is generated through a detailed process where available material is read, routed, reviewed, and compared with outside info. Journal Articles, Proposals, Compound tokens, and Research Daos each have their own tailored route within the agent; which breaks all material down to its core claims and individually validates them with its own knowledge and material pulled from scientific sources including OpenAlex, NCBI, Euro PMC, as well as DeSci ecosystem docs. Aggregated DeSci token data, Snapshot links, and user comments are also displayed here.",
+  tech: ["Arweave PermaWeb", "Akash Network", "Research APIs"],
+  status: "Testing",
 };
 
 // ─── 3D math ─────────────────────────────────────────────────────────────────
@@ -283,7 +292,7 @@ function NodePanel({ node, onClose }) {
                   boxShadow: "0 0 8px rgba(100,200,150,0.5)",
                   animation: "blinkLive 2s ease-in-out infinite",
                 }} />
-                In Development 
+                {node.status ?? "In Development"}
               </div>
             </div>
           </div>
@@ -606,12 +615,16 @@ function LandingPage() {
           50%{opacity:0.7;transform:translateY(6px)}
         }
         @keyframes holoShift {
-          0% { background-position: 200% 50%; }
-          100% { background-position: 0% 50%; }
+          0% { background-position: 0px 0; }
+          100% { background-position: 500px 0; }
+        }
+        .holo-text {
+          background-clip: text !important;
+          -webkit-background-clip: text !important;
         }
         @keyframes infiniteScroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-16.666%); }
+          0% { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-50%, 0, 0); }
         }
 
         body { font-family: 'Syne', sans-serif; }
@@ -643,23 +656,38 @@ function LandingPage() {
         }} />
       </div>
 
-      {/* ── Floating Blog Link ── */}
-      <a href="/" style={{
-        position: "fixed",
-        top: 24,
-        right: 48,
-        zIndex: 10,
-        color: "rgba(255,255,255,0.35)",
-        fontFamily: "'Syne Mono', monospace",
-        fontSize: 11,
-        letterSpacing: 2,
-        textDecoration: "none",
-        textTransform: "uppercase",
-        transition: "color 0.15s",
-      }}
-        onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.8)"}
-        onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
-      >Blog</a>
+      {/* ── Floating Nav Links ── */}
+      {[
+        {
+          href: "https://bankr.bot/discover/0x46d66f7d2c6e13dc29f04552614aa6e703569ba3",
+          label: "Token",
+          position: { top: 24, left: 48 },
+        },
+        {
+          href: "https://www.descai.net/blog",
+          label: "Blog",
+          position: { top: 24, right: 48 },
+        },
+      ].map(({ href, label, position }) => (
+        <a
+          key={label}
+          href={href}
+          style={{
+            position: "fixed",
+            zIndex: 10,
+            color: "rgba(255,255,255,0.35)",
+            fontFamily: "'Syne Mono', monospace",
+            fontSize: 11,
+            letterSpacing: 2,
+            textDecoration: "none",
+            textTransform: "uppercase",
+            transition: "color 0.15s",
+            ...position,
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = "rgba(255,255,255,0.8)"; }}
+          onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.35)"; }}
+        >{label}</a>
+      ))}
 
       {/* ── Hero ── */}
       <section style={{
@@ -670,22 +698,47 @@ function LandingPage() {
         paddingTop: 0, paddingBottom: 48,
       }}>
         {/* Title — clean, consistent font */}
-        <div style={{ textAlign: "center", animation: "fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both", position: "relative", zIndex: 150 }}>
+        <div style={{
+          textAlign: "center",
+          animation: "fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both",
+          position: "relative",
+          zIndex: 150,
+          marginBottom: -20,
+          marginTop: 30,
+        }}>
+          {/* Base layer: outline + drop shadow */}
           <h1 style={{
             fontFamily: "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
             fontWeight: 800,
             fontSize: "clamp(100px, 16vw, 180px)",
             letterSpacing: "-0.02em",
             lineHeight: 1,
-            background: "linear-gradient(90deg, rgba(180,100,255,0.9) 0%, #fff 25%, rgba(100,200,255,0.9) 50%, #fff 75%, rgba(180,100,255,0.9) 100%)",
-            backgroundSize: "200% 100%",
+            color: "transparent",
+            WebkitTextFillColor: "transparent",
+            WebkitTextStroke: "1.5px rgba(255, 255, 255, 0.35)",
+            textShadow: "0 6px 14px rgba(0, 0, 0, 0.9), 0 2px 4px rgba(0, 0, 0, 0.7), 0 0 30px rgba(200, 190, 240, 0.16), 0 0 60px rgba(180, 160, 220, 0.08)",
+            filter: "drop-shadow(0 0 8px rgba(180, 160, 220, 0.12)) drop-shadow(0 0 20px rgba(140, 120, 200, 0.064)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.85))",
+          }}>
+            DeScAi
+          </h1>
+          {/* Gradient layer: animated hologram clipped to text, on top */}
+          <h1 className="holo-text" aria-hidden="true" style={{
+            position: "absolute",
+            top: 0, left: 0, right: 0,
+            fontFamily: "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            fontWeight: 800,
+            fontSize: "clamp(100px, 16vw, 180px)",
+            letterSpacing: "-0.02em",
+            lineHeight: 1,
+            background: "linear-gradient(90deg, rgba(80,70,130,0.15) 0%, rgba(90,80,150,0.25) 25%, rgba(110,95,170,0.65) 50%, rgba(90,80,150,0.25) 75%, rgba(80,70,130,0.15) 100%)",
+            backgroundSize: "500px 100%",
+            backgroundRepeat: "repeat",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            animation: "holoShift 12s linear infinite",
-            filter: "drop-shadow(0 0 40px rgba(255,255,255,0.2)) drop-shadow(0 4px 20px rgba(0,0,0,0.4))",
-            marginBottom: -20,
-            marginTop: 30,
+            WebkitTextStroke: "0px transparent",
+            animation: "holoShift 14s linear infinite",
+            opacity: 0.7,
+            pointerEvents: "none",
           }}>
             DeScAi
           </h1>
@@ -786,9 +839,25 @@ function LandingPage() {
                   <path d="M22 42h4" stroke="rgba(180,140,255,0.5)" strokeWidth="0.8" />
                 </svg>
               ),
-              description: "Fully utonomous AI-Agent that collects, analyzes, and reviews DeSci material include research, posts, funding information, and more to produce comprehensive claim anlasyes posted immutably on-chain.",
-              link: "https://descai.gitbook.io/descai-docs/",
-              linkLabel: "See Documentation",
+              description: "Fully autonomous AI-Agent that collects, analyzes, and reviews DeSci material include Research Articles, Experiment Proposals, Compound Tokens, and Research DAOs to produce comprehensive reviews posted immutably on-chain.",
+              link: "https://www.descai.net/blog",
+              linkLabel: "Visit Agent Blog",
+            },
+            {
+              title: "Our Team",
+              icon: (
+                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="14" r="5.5" stroke="rgba(100,220,160,0.8)" strokeWidth="1.5" fill="none" />
+                  <path d="M14 34c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="rgba(100,220,160,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                  <circle cx="38" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
+                  <path d="M42 36c0-4-2.8-7-6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                  <circle cx="10" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
+                  <path d="M6 36c0-4 2.8-7 6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                </svg>
+              ),
+              description: "Based in the Stony Brook University Blockchain Business Lab, our international and interdisplinary team of web3 developers, ML researchers, and data scientists made this agent possible.",
+              link: "/team",
+              linkLabel: "Learn More",
             },
             {
               title: "Our Model",
@@ -804,25 +873,9 @@ function LandingPage() {
                   <line x1="34" y1="33" x2="26" y2="38" stroke="rgba(100,200,255,0.35)" strokeWidth="1" />
                 </svg>
               ),
-              description: "Domain-trained on a ~40 Billion token publicly accessible dataset of high-quality scientific material, our model is able to effectively evaluate scientific claims and produce transparent, contextually relevant reviews.",
+              description: "Domain-trained on a ~40 Billion token manually assembled dataset of high-quality scientific material, our model is tailored to scientific claim evaluation. Reviews are generated with Qwen 3.6 27B as the base model.",
               link: "https://huggingface.co/DeScAi",
               linkLabel: "Use our model",
-            },
-            {
-              title: "Our Team",
-              icon: (
-                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="24" cy="14" r="5.5" stroke="rgba(100,220,160,0.8)" strokeWidth="1.5" fill="none" />
-                  <path d="M14 34c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="rgba(100,220,160,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-                  <circle cx="38" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
-                  <path d="M42 36c0-4-2.8-7-6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                  <circle cx="10" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
-                  <path d="M6 36c0-4 2.8-7 6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                </svg>
-              ),
-              description: "Based in the Stony Brook University Blockchain Business Lab, our interdisplinary and international team of web3 developers, ML researchers, and data scientists who make this work possible.",
-              link: "/team",
-              linkLabel: "Learn More",
             },
           ].map((panel, i) => (
             <div key={panel.title} style={{
@@ -951,8 +1004,7 @@ function LandingPage() {
         <div style={{
           position: "relative",
           height: 50,
-          maxWidth: 900,
-          margin: "0 auto",
+          width: "100%",
           overflow: "hidden",
         }}>
           {/* Left fade */}
@@ -971,21 +1023,23 @@ function LandingPage() {
             pointerEvents: "none",
           }} />
 
-          {/* Carousel wrapper */}
+          {/* Carousel — duplicated strips wide enough to always fill the viewport */}
           <div style={{
             display: "flex",
-            animation: "infiniteScroll 12s linear infinite",
+            width: "max-content",
+            animation: "infiniteScroll 75s linear infinite",
+            willChange: "transform",
           }}>
-            {/* Repeat content multiple times for seamless loop */}
-            {[...Array(6)].map((_, idx) => (
-              <div key={idx} style={{
+            {[0, 1].map((stripIdx) => (
+              <div key={stripIdx} style={{
                 display: "flex",
-                gap: 100,
-                paddingRight: 100,
+                alignItems: "center",
+                gap: MARQUEE_GAP,
+                paddingRight: MARQUEE_GAP,
                 flexShrink: 0,
               }}>
-                {["Akash Network", "AR.IO", "Molecule.XYZ"].map((name) => (
-                  <span key={name + idx} style={{
+                {MARQUEE_STRIP.map((name, itemIdx) => (
+                  <span key={`${stripIdx}-${itemIdx}`} style={{
                     fontFamily: "'Syne Mono', monospace",
                     fontSize: 18,
                     fontWeight: 700,
@@ -1040,7 +1094,7 @@ function LandingPage() {
       }}>
         {[
           { label: "Read Docs", primary: true, href: "https://descai.gitbook.io/descai-docs" },
-          { label: "Explore the DKG", primary: false, href: "https://dkg.origintrail.io/explore?ual=did:dkg:base:8453/0xc28f310a87f7621a087a603e2ce41c22523f11d7/435" },
+          { label: "Read From Permaweb", primary: false, href: "https://viewblock.io/arweave/address/N4KWjMDSY3A2tbAKzHkBlFJfqgLqLewSQWXYfB7giTA" },
           { label: "X", primary: false, href: "https://x.com/DeScAiTeam" },
           { label: "GitHub", primary: false, href: "https://github.com/DeScAI-Team" },
         ].map(({ label, primary, href }) => (

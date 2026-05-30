@@ -23,12 +23,12 @@ const NODES = [
     theta0: 72,
     phi0: -20,
     description: "An autonomous crawler that continuously indexes DeSci papers, preprints, and protocol documentation — cleaning and writing structured knowledge into the Decentralized Knowledge Graph.",
-    tech: ["Scrapy / Playwright", "NLP Pipeline", "DKG Writer"],
+    tech: ["Playwright", "NLP Pipeline", "Beautiful Soup"],
   },
   {
     id: "drag-node",
-    label: "dRAG Node",
-    tag: "KNOWLEDGE",
+    label: "Inference",
+    tag: "ON DEMAND",
     theta0: 144,
     phi0: 25,
     description: "Decentralized RAG via OriginTrail's DKG edge node. The on-chain knowledge graph stores verifiable scientific claims that DeScAi queries at inference time for grounded, citable reviews.",
@@ -37,7 +37,7 @@ const NODES = [
   {
     id: "permaweb",
     label: "PermaWeb",
-    tag: "PERMANENCE",
+    tag: "STORAGE",
     theta0: 216,
     phi0: -15,
     description: "Every review is immutably written to the Arweave PermaWeb. No revisions without record. No takedowns. The scientific record stays open and permanent — forever accessible.",
@@ -503,20 +503,22 @@ export default function DeScAiLanding() {
         alignItems: "center", justifyContent: "center",
         paddingTop: 32, paddingBottom: 48,
       }}>
-        {/* Title — clean, no color explosion */}
+        {/* Title — embossed outline letting space background through */}
         <div style={{ textAlign: "center", animation: "fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both" }}>
           <h1 style={{
             fontFamily: "'Syne', sans-serif",
             fontWeight: 800,
-            fontSize: "clamp(52px, 9vw, 92px)",
-            letterSpacing: "-0.01em",
+            fontSize: "clamp(64px, 12vw, 120px)",
+            letterSpacing: "0.02em",
             lineHeight: 1,
-            color: "#fff",
+            color: "rgba(255,255,255,0.2)",
+            WebkitTextStroke: "1.8px rgba(255,255,255,0.7)",
+            textShadow: "0 0 30px rgba(180,100,255,0.3), 0 0 60px rgba(100,150,255,0.15), 0 2px 4px rgba(0,0,0,0.5)",
             marginBottom: 12,
+            filter: "drop-shadow(0 0 8px rgba(255,255,255,0.1))",
           }}>
             De<span style={{
-              fontWeight: 400,
-              color: "rgba(255,255,255,0.4)",
+              WebkitTextStroke: "1.2px rgba(255,255,255,0.35)",
             }}>Sc</span>Ai
           </h1>
           <p style={{
