@@ -1078,16 +1078,16 @@ function LandingPage() {
         display: "flex", justifyContent: "center", gap: 12, flexWrap: "wrap",
       }}>
         {[
-          { label: "Read Docs", primary: true, href: "https://descai.gitbook.io/descai-docs" },
-          { label: "Read From Permaweb", primary: false, href: "https://viewblock.io/arweave/address/N4KWjMDSY3A2tbAKzHkBlFJfqgLqLewSQWXYfB7giTA" },
-          { label: "X", primary: false, href: "https://x.com/DeScAiTeam" },
-          { label: "GitHub", primary: false, href: "https://github.com/DeScAI-Team" },
-        ].map(({ label, primary, href }) => (
-          <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+          { label: "Read Docs" },
+          { label: "Read From Permaweb", href: "https://viewblock.io/arweave/address/N4KWjMDSY3A2tbAKzHkBlFJfqgLqLewSQWXYfB7giTA" },
+          { label: "X", href: "https://x.com/DeScAiTeam" },
+          { label: "GitHub", href: "https://github.com/DeScAI-Team" },
+        ].map(({ label, href }) => {
+          const button = (
             <button style={{
-              background: primary ? "rgba(255,255,255,0.9)" : "transparent",
-              border: primary ? "none" : "1px solid rgba(255,255,255,0.12)",
-              color: primary ? "#06040f" : "rgba(255,255,255,0.45)",
+              background: "transparent",
+              border: "1px solid rgba(255,255,255,0.12)",
+              color: "rgba(255,255,255,0.45)",
               fontFamily: "'Syne Mono', monospace",
               fontSize: 10, letterSpacing: 2.5,
               padding: "12px 24px", cursor: "pointer",
@@ -1095,16 +1095,24 @@ function LandingPage() {
               transition: "all 0.15s",
             }}
               onMouseEnter={e => {
-                if (primary) { e.currentTarget.style.background = "#fff"; }
-                else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)"; e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.3)";
+                e.currentTarget.style.color = "rgba(255,255,255,0.75)";
               }}
               onMouseLeave={e => {
-                if (primary) { e.currentTarget.style.background = "rgba(255,255,255,0.9)"; }
-                else { e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; e.currentTarget.style.color = "rgba(255,255,255,0.45)"; }
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)";
+                e.currentTarget.style.color = "rgba(255,255,255,0.45)";
               }}
             >{label}</button>
-          </a>
-        ))}
+          );
+
+          return href ? (
+            <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
+              {button}
+            </a>
+          ) : (
+            <span key={label}>{button}</span>
+          );
+        })}
       </section>
 
       {/* ── Footer ── */}
