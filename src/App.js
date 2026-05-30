@@ -9,7 +9,6 @@ import Team from "./Team";
 
 const MARQUEE_SPONSORS = ["Akash Network", "AR.IO", "Molecule.XYZ", "BankrBot"];
 const MARQUEE_GAP = 100;
-const MARQUEE_STRIP = Array.from({ length: 3 }, () => MARQUEE_SPONSORS).flat();
 
 const NODES = [
   {
@@ -656,38 +655,23 @@ function LandingPage() {
         }} />
       </div>
 
-      {/* ── Floating Nav Links ── */}
-      {[
-        {
-          href: "https://bankr.bot/discover/0x46d66f7d2c6e13dc29f04552614aa6e703569ba3",
-          label: "Token",
-          position: { top: 24, left: 48 },
-        },
-        {
-          href: "https://www.descai.net/blog",
-          label: "Blog",
-          position: { top: 24, right: 48 },
-        },
-      ].map(({ href, label, position }) => (
-        <a
-          key={label}
-          href={href}
-          style={{
-            position: "fixed",
-            zIndex: 10,
-            color: "rgba(255,255,255,0.35)",
-            fontFamily: "'Syne Mono', monospace",
-            fontSize: 11,
-            letterSpacing: 2,
-            textDecoration: "none",
-            textTransform: "uppercase",
-            transition: "color 0.15s",
-            ...position,
-          }}
-          onMouseEnter={e => { e.currentTarget.style.color = "rgba(255,255,255,0.8)"; }}
-          onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.35)"; }}
-        >{label}</a>
-      ))}
+      {/* ── Floating Blog Link ── */}
+      <a href="/" style={{
+        position: "fixed",
+        top: 24,
+        right: 48,
+        zIndex: 10,
+        color: "rgba(255,255,255,0.35)",
+        fontFamily: "'Syne Mono', monospace",
+        fontSize: 11,
+        letterSpacing: 2,
+        textDecoration: "none",
+        textTransform: "uppercase",
+        transition: "color 0.15s",
+      }}
+        onMouseEnter={e => e.currentTarget.style.color = "rgba(255,255,255,0.8)"}
+        onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.35)"}
+      >Blog</a>
 
       {/* ── Hero ── */}
       <section style={{
@@ -716,8 +700,8 @@ function LandingPage() {
             color: "transparent",
             WebkitTextFillColor: "transparent",
             WebkitTextStroke: "1.5px rgba(255, 255, 255, 0.35)",
-            textShadow: "0 6px 14px rgba(0, 0, 0, 0.9), 0 2px 4px rgba(0, 0, 0, 0.7), 0 0 30px rgba(200, 190, 240, 0.16), 0 0 60px rgba(180, 160, 220, 0.08)",
-            filter: "drop-shadow(0 0 8px rgba(180, 160, 220, 0.12)) drop-shadow(0 0 20px rgba(140, 120, 200, 0.064)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.85))",
+            textShadow: "0 6px 14px rgba(0, 0, 0, 0.9), 0 2px 4px rgba(0, 0, 0, 0.7), 0 0 30px rgba(200, 190, 240, 0.2), 0 0 60px rgba(180, 160, 220, 0.1)",
+            filter: "drop-shadow(0 0 8px rgba(180, 160, 220, 0.15)) drop-shadow(0 0 20px rgba(140, 120, 200, 0.08)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.85))",
           }}>
             DeScAi
           </h1>
@@ -840,24 +824,8 @@ function LandingPage() {
                 </svg>
               ),
               description: "Fully autonomous AI-Agent that collects, analyzes, and reviews DeSci material include Research Articles, Experiment Proposals, Compound Tokens, and Research DAOs to produce comprehensive reviews posted immutably on-chain.",
-              link: "https://www.descai.net/blog",
+              link: "https://www.descai.net",
               linkLabel: "Visit Agent Blog",
-            },
-            {
-              title: "Our Team",
-              icon: (
-                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="24" cy="14" r="5.5" stroke="rgba(100,220,160,0.8)" strokeWidth="1.5" fill="none" />
-                  <path d="M14 34c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="rgba(100,220,160,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-                  <circle cx="38" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
-                  <path d="M42 36c0-4-2.8-7-6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                  <circle cx="10" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
-                  <path d="M6 36c0-4 2.8-7 6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                </svg>
-              ),
-              description: "Based in the Stony Brook University Blockchain Business Lab, our international and interdisplinary team of web3 developers, ML researchers, and data scientists made this agent possible.",
-              link: "/team",
-              linkLabel: "Learn More",
             },
             {
               title: "Our Model",
@@ -873,9 +841,25 @@ function LandingPage() {
                   <line x1="34" y1="33" x2="26" y2="38" stroke="rgba(100,200,255,0.35)" strokeWidth="1" />
                 </svg>
               ),
-              description: "Domain-trained on a ~40 Billion token manually assembled dataset of high-quality scientific material, our model is tailored to scientific claim evaluation. Reviews are generated with Qwen 3.6 27B as the base model.",
+              description: "Domain-trained on a ~40 Billion token publicly accessible dataset of high-quality scientific material, our model is able to effectively evaluate scientific claims and produce transparent, contextually relevant reviews.",
               link: "https://huggingface.co/DeScAi",
               linkLabel: "Use our model",
+            },
+            {
+              title: "Our Team",
+              icon: (
+                <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="14" r="5.5" stroke="rgba(100,220,160,0.8)" strokeWidth="1.5" fill="none" />
+                  <path d="M14 34c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="rgba(100,220,160,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                  <circle cx="38" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
+                  <path d="M42 36c0-4-2.8-7-6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                  <circle cx="10" cy="18" r="4" stroke="rgba(100,220,160,0.5)" strokeWidth="1.2" fill="none" />
+                  <path d="M6 36c0-4 2.8-7 6-7" stroke="rgba(100,220,160,0.4)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                </svg>
+              ),
+              description: "Based in the Stony Brook University Blockchain Business Lab, our interdisplinary and international team of web3 developers, ML researchers, and data scientists who make this work possible.",
+              link: "/team",
+              linkLabel: "Learn More",
             },
           ].map((panel, i) => (
             <div key={panel.title} style={{
@@ -1004,7 +988,8 @@ function LandingPage() {
         <div style={{
           position: "relative",
           height: 50,
-          width: "100%",
+          maxWidth: 900,
+          margin: "0 auto",
           overflow: "hidden",
         }}>
           {/* Left fade */}
@@ -1023,11 +1008,11 @@ function LandingPage() {
             pointerEvents: "none",
           }} />
 
-          {/* Carousel — duplicated strips wide enough to always fill the viewport */}
+          {/* Carousel — two identical strips; -50% scroll = one full cycle */}
           <div style={{
             display: "flex",
             width: "max-content",
-            animation: "infiniteScroll 75s linear infinite",
+            animation: "infiniteScroll 25s linear infinite",
             willChange: "transform",
           }}>
             {[0, 1].map((stripIdx) => (
@@ -1038,7 +1023,7 @@ function LandingPage() {
                 paddingRight: MARQUEE_GAP,
                 flexShrink: 0,
               }}>
-                {MARQUEE_STRIP.map((name, itemIdx) => (
+                {MARQUEE_SPONSORS.map((name, itemIdx) => (
                   <span key={`${stripIdx}-${itemIdx}`} style={{
                     fontFamily: "'Syne Mono', monospace",
                     fontSize: 18,
