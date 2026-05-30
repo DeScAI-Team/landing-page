@@ -1134,7 +1134,7 @@ function LandingPage() {
           fontFamily: "'Syne Mono', monospace",
           fontSize: 9, letterSpacing: 2.5,
           color: "rgba(255,255,255,0.12)",
-        }}>Akash · OriginTrail · Arweave</span>
+        }}>Akash · Base · Arweave</span>
       </footer>
 
       {/* Panel */}
